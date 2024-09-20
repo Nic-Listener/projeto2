@@ -4,8 +4,13 @@ import axios from 'axios';
 import Input from '../components/Imput';
 import Button from '../components/Button';
 import { GlobalStyles } from '../styles/DefaultStyles';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/AppNavigator';
 
-const AddressScreen: React.FC = () => {
+// Definir os tipos de navegação
+type AddressScreenProps = NativeStackScreenProps<RootStackParamList, 'Address'>;
+
+const AddressScreen: React.FC<AddressScreenProps> = ({ navigation }) => {
   const [cep, setCep] = useState('');
   const [logradouro, setLogradouro] = useState('');
   const [bairro, setBairro] = useState('');
@@ -31,12 +36,21 @@ const AddressScreen: React.FC = () => {
         Alert.alert('Erro', 'Erro ao buscar o CEP.');
       }
     } else {
-      // Limpa os campos caso o CEP seja apagado ou inválido
       setLogradouro('');
       setBairro('');
       setCidade('');
       setEstado('');
     }
+  };
+
+  const handleConfirmAddress = () => {
+    if (!cep || !logradouro || !bairro || !cidade || !estado) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      return;
+    }
+
+    Alert.alert('Sucesso', 'Endereço confirmado!');
+    navigation.navigate('Home'); // Navegar para a tela Home
   };
 
   return (
@@ -75,7 +89,7 @@ const AddressScreen: React.FC = () => {
         title="Confirmar Endereço"
         backgroundColor="#000"
         textColor="#fff"
-        onPress={() => Alert.alert('Sucesso', 'Endereço confirmado!')}
+        onPress={handleConfirmAddress} // Função de confirmação
       />
     </View>
   );
