@@ -5,6 +5,7 @@ import LoginScreen from '../screens/LoginScreen';
 import CreateAccountScreen from '../screens/CreateAccountScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import HomeScreen from '../screens/HomeScreen';
+import AddressScreen from '../screens/AddressScreen';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -23,6 +24,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Address" component={AddressScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
