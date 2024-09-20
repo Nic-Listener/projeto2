@@ -19,7 +19,7 @@ const LoginScreen: React.FC = ({ navigation }) => {
   };
 
   const handleForgotPassword = () => {
-    navigation.navigate('ForgotPassword');
+    navigation.navigate('ForgotPassword', { email });
   };
 
   const handleLogin = async () => {

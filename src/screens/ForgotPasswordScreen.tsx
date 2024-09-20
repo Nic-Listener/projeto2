@@ -57,7 +57,7 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ route, navi
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
-        editable={false}
+        editable={!route.params?.email}
       />
       <Input
         placeholder="Nova senha"
