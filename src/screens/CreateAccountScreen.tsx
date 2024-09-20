@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, Alert } from 'react-native';
-import MMKVStorage from 'react-native-mmkv-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Input from '../components/Imput';
 import Button from '../components/Button';
-import { GlobalStyles } from '../styles/Styles'; 
+import { GlobalStyles } from '../styles/DefaultStyles';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 
-const MMKV = new MMKVStorage.Loader().initialize();
-
 type CreateAccountScreenProps = NativeStackScreenProps<RootStackParamList, 'CreateAccount'>;
 
-const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({ navigation }) => {
+const CreateAccountScreen: React.FC = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -23,14 +21,14 @@ const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({ navigation })
 
     try {
       // Verifica se o e-mail já está cadastrado
-      const existingUser = MMKV.getString(email);
+      const existingUser = await AsyncStorage.getItem(email);
       if (existingUser) {
         Alert.alert('Erro', 'E-mail já cadastrado.');
         return;
       }
 
-      // Armazena o e-mail e senha no MMKV
-      MMKV.setString(email, password);
+      // Armazena o e-mail e senha no AsyncStorage
+      await AsyncStorage.setItem(email, password);
       Alert.alert('Sucesso', 'Conta criada com sucesso!', [
         { text: 'OK', onPress: () => navigation.navigate('Login') },
       ]);

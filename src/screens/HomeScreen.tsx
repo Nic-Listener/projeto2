@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { GlobalStyles } from '../styles/Styles'; 
+import { GlobalStyles } from '../styles/DefaultStyles';
 
 const HomeScreen: React.FC = () => {
   return (

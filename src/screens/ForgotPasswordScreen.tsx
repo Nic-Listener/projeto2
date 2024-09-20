@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Alert } from 'react-native';
-import MMKVStorage from 'react-native-mmkv-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Input from '../components/Imput';
 import Button from '../components/Button';
-import { GlobalStyles } from '../styles/Styles';
+import { GlobalStyles } from '../styles/DefaultStyles'; 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
-
-const MMKV = new MMKVStorage.Loader().initialize(); // Inicializa o MMKV
 
 type ForgotPasswordScreenProps = NativeStackScreenProps<RootStackParamList, 'ForgotPassword'>;
 
@@ -35,14 +33,14 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ route, navi
 
     try {
       // Verifica se o e-mail existe
-      const existingUser = MMKV.getString(email);
+      const existingUser = AsyncStorage.getItem(email);
       if (!existingUser) {
         Alert.alert('Erro', 'E-mail não encontrado.');
         return;
       }
 
       // Atualiza a senha
-      MMKV.setString(email, newPassword);
+      AsyncStorage.setItem(email, newPassword);
       Alert.alert('Sucesso', 'Senha alterada com sucesso!', [
         { text: 'OK', onPress: () => navigation.navigate('Login') },
       ]);

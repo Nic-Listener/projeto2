@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import { TouchableOpacity } from 'react-native'; 
 import { View, Text, Alert } from 'react-native';
-import MMKVStorage from 'react-native-mmkv-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Input from '../components/Imput';
 import Button from '../components/Button';
-import { GlobalStyles } from '../styles/Styles'; 
+import { GlobalStyles } from '../styles/DefaultStyles';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 
-const MMKV = new MMKVStorage.Loader().initialize();
+type CreateAccountScreenProps = NativeStackScreenProps<RootStackParamList, 'CreateAccount'>;
 
-type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
-
-const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
+const LoginScreen: React.FC = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -32,20 +30,20 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
     try {
       // Verifica se o usuário existe
-      const storedPassword = MMKV.getString(email);
+      const storedPassword = AsyncStorage.getItem(email);
 
       if (!storedPassword) {
         Alert.alert('Erro', 'E-mail ou senha incorretos.');
         return;
       }
 
-      if (storedPassword !== password) {
+      if (await storedPassword !== password) {
         Alert.alert('Erro', 'E-mail ou senha incorretos.');
         return;
       }
 
-      // Se o login for bem-sucedido, navega para a tela principal
-      navigation.navigate('Home');
+      // Se o login for bem-sucedido, navega para a proxima tela
+      navigation.navigate('Address');
     } catch (error) {
       Alert.alert('Erro', 'Erro ao fazer login.');
     }
