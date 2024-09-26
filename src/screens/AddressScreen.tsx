@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Alert } from 'react-native';
+import { View, Text, Alert, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import Input from '../components/Imput';
 import Button from '../components/Button';
@@ -7,7 +7,6 @@ import { GlobalStyles } from '../styles/DefaultStyles';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 
-// Definir os tipos de navegação
 type AddressScreenProps = NativeStackScreenProps<RootStackParamList, 'Address'>;
 
 const AddressScreen: React.FC<AddressScreenProps> = ({ navigation }) => {
@@ -16,9 +15,12 @@ const AddressScreen: React.FC<AddressScreenProps> = ({ navigation }) => {
   const [bairro, setBairro] = useState('');
   const [cidade, setCidade] = useState('');
   const [estado, setEstado] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // Estado de loading
 
   const handleCepChange = async (enteredCep: string) => {
     if (enteredCep.length === 8) {
+      setIsLoading(true); // Inicia o loading
+
       try {
         const response = await axios.get(`https://viacep.com.br/ws/${enteredCep}/json/`);
 
@@ -34,6 +36,8 @@ const AddressScreen: React.FC<AddressScreenProps> = ({ navigation }) => {
         setEstado(uf);
       } catch (error) {
         Alert.alert('Erro', 'Erro ao buscar o CEP.');
+      } finally {
+        setIsLoading(false); // Finaliza o loading
       }
     } else {
       setLogradouro('');
@@ -50,7 +54,7 @@ const AddressScreen: React.FC<AddressScreenProps> = ({ navigation }) => {
     }
 
     Alert.alert('Sucesso', 'Endereço confirmado!');
-    navigation.navigate('Home'); // Navegar para a tela Home
+    navigation.navigate('Home');
   };
 
   return (
@@ -65,31 +69,23 @@ const AddressScreen: React.FC<AddressScreenProps> = ({ navigation }) => {
         keyboardType="numeric"
         maxLength={8}
       />
-      <Input
-        placeholder="Logradouro"
-        value={logradouro}
-        editable={false}
-      />
-      <Input
-        placeholder="Bairro"
-        value={bairro}
-        editable={false}
-      />
-      <Input
-        placeholder="Cidade"
-        value={cidade}
-        editable={false}
-      />
-      <Input
-        placeholder="Estado"
-        value={estado}
-        editable={false}
-      />
+
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#0000ff" /> // Indicador de loading
+      ) : (
+        <>
+          <Input placeholder="Logradouro" value={logradouro} editable={false} />
+          <Input placeholder="Bairro" value={bairro} editable={false} />
+          <Input placeholder="Cidade" value={cidade} editable={false} />
+          <Input placeholder="Estado" value={estado} editable={false} />
+        </>
+      )}
+
       <Button
         title="Confirmar Endereço"
         backgroundColor="#000"
         textColor="#fff"
-        onPress={handleConfirmAddress} // Função de confirmação
+        onPress={handleConfirmAddress}
       />
     </View>
   );
