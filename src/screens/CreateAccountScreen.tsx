@@ -9,7 +9,7 @@ import { RootStackParamList } from '../navigation/AppNavigator';
 
 type CreateAccountScreenProps = NativeStackScreenProps<RootStackParamList, 'CreateAccount'>;
 
-const CreateAccountScreen: React.FC = ({ navigation }) => {
+const CreateAccountScreen: React.FC = ({ navigation }:any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 

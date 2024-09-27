@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TouchableOpacity } from 'react-native'; 
-import { View, Text, Alert } from 'react-native';
+import { View, Text, Alert, ActivityIndicator, TouchableHighlight } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Input from '../components/Imput';
 import Button from '../components/Button';
@@ -10,7 +10,7 @@ import { RootStackParamList } from '../navigation/AppNavigator';
 
 type CreateAccountScreenProps = NativeStackScreenProps<RootStackParamList, 'CreateAccount'>;
 
-const LoginScreen: React.FC = ({ navigation }) => {
+const LoginScreen: React.FC = ({ navigation }:any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -30,7 +30,7 @@ const LoginScreen: React.FC = ({ navigation }) => {
 
     try {
       // Verifica se o usuário existe
-      const storedPassword = AsyncStorage.getItem(email);
+      const storedPassword = await AsyncStorage.getItem(email);
 
       if (!storedPassword) {
         Alert.alert('Erro', 'E-mail ou senha incorretos.');
@@ -44,7 +44,7 @@ const LoginScreen: React.FC = ({ navigation }) => {
 
       // Se o login for bem-sucedido, navega para a proxima tela
       navigation.navigate('Address');
-    } catch (error) {
+    } catch (error) { console.log(error);
       Alert.alert('Erro', 'Erro ao fazer login.');
     }
   };
@@ -73,6 +73,17 @@ const LoginScreen: React.FC = ({ navigation }) => {
       <TouchableOpacity onPress={handleForgotPassword}>
         <Text style={GlobalStyles.forgotPassword}>Esqueci minha senha</Text>
       </TouchableOpacity>
+
+      <TouchableHighlight
+        underlayColor="#444"
+        disabled={false} // Desabilitar o botão durante o loading
+      >
+        <View >
+          <Text >    TESTE    
+            </Text>    
+            {true && (<ActivityIndicator  color="#fff" /> )} 
+            </View>
+      </TouchableHighlight>
 
       <Button
         title="Criar Conta"
