@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TouchableOpacity } from 'react-native'; 
-import { View, Text, Alert, ActivityIndicator, TouchableHighlight } from 'react-native';
+import { View, Text, Alert, StatusBar, ActivityIndicator, TouchableHighlight } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Input from '../components/Imput';
 import Button from '../components/Button';
@@ -37,7 +37,7 @@ const LoginScreen: React.FC = ({ navigation }:any) => {
         return;
       }
 
-      if (await storedPassword !== password) {
+      if (storedPassword !== password) {
         Alert.alert('Erro', 'E-mail ou senha incorretos.');
         return;
       }
@@ -73,17 +73,6 @@ const LoginScreen: React.FC = ({ navigation }:any) => {
       <TouchableOpacity onPress={handleForgotPassword}>
         <Text style={GlobalStyles.forgotPassword}>Esqueci minha senha</Text>
       </TouchableOpacity>
-
-      <TouchableHighlight
-        underlayColor="#444"
-        disabled={false} // Desabilitar o botão durante o loading
-      >
-        <View >
-          <Text >    TESTE    
-            </Text>    
-            {true && (<ActivityIndicator  color="#fff" /> )} 
-            </View>
-      </TouchableHighlight>
 
       <Button
         title="Criar Conta"

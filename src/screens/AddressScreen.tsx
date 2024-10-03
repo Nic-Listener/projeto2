@@ -89,7 +89,7 @@ const AddressScreen: React.FC<AddressScreenProps> = ({ navigation }) => {
         value={estado}
         editable={false}
       />
-      
+
       <TouchableHighlight
         onPress={handleConfirmAddress}
         underlayColor="#444"
@@ -98,9 +98,7 @@ const AddressScreen: React.FC<AddressScreenProps> = ({ navigation }) => {
       >
         <View style={styles.buttonContent}>
           <Text style={styles.buttonText}>Confirmar Endereço</Text>
-          <>
-          {isLoading &&(<ActivityIndicator style={styles.loadingIndicator} color="#fff" />)} {/* Exibir loading ao lado */}
-          </>
+          {isLoading && (<ActivityIndicator style={styles.loadingIndicator} color="#fff" />)} 
         </View>
       </TouchableHighlight>
 

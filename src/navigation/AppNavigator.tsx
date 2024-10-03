@@ -8,10 +8,11 @@ import HomeScreen from '../screens/HomeScreen';
 import AddressScreen from '../screens/AddressScreen';
 
 export type RootStackParamList = {
-  Login: undefined;
-  CreateAccount: undefined;
+  Login: any;
+  CreateAccount: any;
   ForgotPassword: { email?: string };
-  Home: undefined;
+  Home: any;
+  Address: any;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
