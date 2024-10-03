@@ -8,7 +8,7 @@ interface Movie {
   poster: string; // Adicionamos o poster aqui para armazenar a imagem.
 }
 
-const HomeScreen: React.FC = () => {
+const HomeScreen: React.FC = (navigation):any => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -57,6 +57,69 @@ const HomeScreen: React.FC = () => {
     fetchMovies();
   }, []);
 
-}
+  const renderItem = ({ item }: { item: Movie }) => (
+    <View style={styles.card}>
+      <Image source={{ uri: item.poster }} style={styles.poster} />
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.subtitle}>{item.releaseYear}</Text>
+      </View>
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <FlatList
+          data={movies}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.title}
+        />
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    // padding: 10,
+    backgroundColor: '#f2f2f2',
+  },
+  card: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    //borderRadius: 10,
+    padding: 10,
+    //marginBottom: 10,
+    alignItems: 'center',
+    //shadowColor: '#000',
+    //shadowOffset: { width: 0, height: 2 },
+    //shadowOpacity: 0.8,
+    //shadowRadius: 2,
+    elevation: 5,
+  },
+  poster: {
+    width: 80,
+    height: 120,
+    borderRadius: 10,
+  },
+  textContainer: {
+    marginLeft: 10,
+    flex: 1,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  subtitle: {
+    fontSize: 14,
+    fontStyle: 'italic',
+    color: '#888',
+  },
+});
 
 export default HomeScreen;
