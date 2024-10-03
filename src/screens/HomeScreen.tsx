@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { View, Text, Image, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 
 interface Movie {
@@ -6,6 +7,10 @@ interface Movie {
   releaseYear: string;
   poster: string; // Adicionamos o poster aqui para armazenar a imagem.
 }
+
+const HomeScreen: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   // Função para buscar filmes e adicionar os posters
   const fetchMovies = async () => {
@@ -40,11 +45,18 @@ interface Movie {
         return { ...movie, poster }; // Adicionando o poster ao objeto movie.
       });
 
-
+      setMovies(updatedMovies);
+    } catch (error) {
+      console.error('Erro ao buscar filmes:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchMovies();
   }, []);
+
 }
 
 export default HomeScreen;
