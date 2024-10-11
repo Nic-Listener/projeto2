@@ -1,0 +1,45 @@
+import axios from 'axios';
+
+interface Movie {
+  title: string;
+  releaseYear: string;
+  poster: string; // Poster é sempre uma string agora
+}
+
+export const fetchMovies = async (): Promise<Movie[]> => {
+  try {
+    const response = await axios.get('https://reactnative.dev/movies.json');
+    const movieList = response.data.movies;
+
+    // Adicionando os pôsteres para os filmes
+    const updatedMovies = movieList.map((movie: Movie) => {
+      let poster = '';
+
+      switch (movie.title) {
+        case 'Star Wars':
+          poster = "https://i.etsystatic.com/23402008/r/il/86eb07/2374193445/il_570xN.2374193445_1y0k.jpg";
+          break;
+        case 'Back to the Future':
+          poster = "https://www.posters.de/media/catalog/product/cache/cb3faf85ecb1e071fdba48f981c86454/p/y/py_pp0830_3.jpg";
+          break;
+        case 'The Matrix':
+          poster = "https://www.coverwhiz.com/uploads/movies/the-matrix.jpg";
+          break;
+        case 'Inception':
+          poster = "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg";
+          break;
+        case 'Interstellar':
+          poster = "https://i.pinimg.com/originals/e4/bb/76/e4bb7637935f94a99746ada39277a54a.jpg";
+          break;
+        default:
+          poster = "https://via.placeholder.com/150"; // Pôster padrão para filmes que não estão na lista.
+      }
+
+      return { ...movie, poster }; // Garantimos que o poster é sempre uma string.
+    });
+
+    return updatedMovies;
+  } catch (error) {
+    throw new Error('Erro ao buscar filmes');
+  }
+};
