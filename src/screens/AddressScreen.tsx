@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import { GlobalStyles } from '../styles/DefaultStyles';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import { fetchAddressByCep } from '../services/CEPService'; 
 
 type AddressScreenProps = NativeStackScreenProps<RootStackParamList, 'Address'>;
 
@@ -22,18 +23,12 @@ const AddressScreen: React.FC<AddressScreenProps> = ({ navigation }) => {
       setIsLoading(true); // Iniciar o loading
       try {
         await new Promise(resolve => setTimeout(resolve, 2000)); // Garantir o mínimo de 2 segundos de espera
-        const response = await axios.get(`https://viacep.com.br/ws/${enteredCep}/json/`);
-
-        if (response.data.erro) {
-          Alert.alert('Erro', 'CEP inválido.');
-          return;
-        }
-
-        const { logradouro, bairro, localidade, uf } = response.data;
-        setLogradouro(logradouro);
-        setBairro(bairro);
-        setCidade(localidade);
-        setEstado(uf);
+        // Função para validar o CEP
+        const addressData = await fetchAddressByCep(enteredCep);
+        setLogradouro(addressData.logradouro);
+        setBairro(addressData.bairro);
+        setCidade(addressData.localidade);
+        setEstado(addressData.uf);
       } catch (error) {
         Alert.alert('Erro', 'Erro ao buscar o CEP.');
       } finally {
