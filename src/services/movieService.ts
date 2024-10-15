@@ -42,5 +42,27 @@ export const fetchMovies = async () => {
   }
 };
 
+// Função para selecionar uma imagem da galeria
+export const selectImageFromGallery = async () => {
+  try {
+    const options = {
+      mediaType: 'photo',
+      maxWidth: 300,
+      maxHeight: 300,
+      quality: 1,
+    };
 
+    const result = await launchImageLibrary(options);
+
+    if (result.didCancel) {
+      console.log('Usuário cancelou a seleção de imagem');
+    } else if (result.errorMessage) {
+      Alert.alert('Erro', result.errorMessage);
+    } else {
+      const selectedImageUri = result.assets ? result.assets[0].uri : '';
+      return selectedImageUri; // Retorna o URI da imagem selecionada
+    }
+  } catch (error) {
+    Alert.alert('Erro', 'Ocorreu um erro ao selecionar a imagem');
+  }
 };
