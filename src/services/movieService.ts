@@ -1,12 +1,9 @@
 import axios from 'axios';
+import { Alert } from 'react-native';
+import { launchImageLibrary } from 'react-native-image-picker';
 
-interface Movie {
-  title: string;
-  releaseYear: string;
-  poster: string; // Poster é sempre uma string agora
-}
-
-export const fetchMovies = async (): Promise<Movie[]> => {
+// Função para buscar filmes
+export const fetchMovies = async () => {
   try {
     const response = await axios.get('https://reactnative.dev/movies.json');
     const movieList = response.data.movies;
@@ -35,11 +32,15 @@ export const fetchMovies = async (): Promise<Movie[]> => {
           poster = "https://via.placeholder.com/150"; // Pôster padrão para filmes que não estão na lista.
       }
 
-      return { ...movie, poster }; // Garantimos que o poster é sempre uma string.
+      return { ...movie, poster }; // Adicionando o poster ao objeto movie.
     });
 
     return updatedMovies;
   } catch (error) {
-    throw new Error('Erro ao buscar filmes');
+    console.error('Erro ao buscar filmes:', error);
+    return [];
   }
+};
+
+
 };
