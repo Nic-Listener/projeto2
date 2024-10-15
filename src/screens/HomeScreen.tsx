@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import { fetchMovies } from '../services/movieService';
+import { fetchMovies, selectImageFromGallery } from '../services/movieService';
 
 interface Movie {
+  id: number;
   title: string;
   releaseYear: string;
-  poster: string; // Adicionamos o poster aqui para armazenar a imagem.
+  poster: string;
 }
 
 const HomeScreen: React.FC = (navigation):any => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [starWarsPoster, setStarWarsPoster] = useState<string>(''); // Estado para o novo pôster de Star Wars
+
 
 
   useEffect(() => {
@@ -32,8 +35,16 @@ const HomeScreen: React.FC = (navigation):any => {
     getMovies();
   }, []);
 
+  // Função para substituir o pôster de Star Wars
+  const handleSelectImage = async () => {
+    const newPosterUri = await selectImageFromGallery();
+    if (newPosterUri) {
+      setStarWarsPoster(newPosterUri);
+    }
+  };
+
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <ActivityIndicator size="large" />;
   }
 
   const renderItem = ({ item }: { item: Movie }) => (
