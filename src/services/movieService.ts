@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Alert } from 'react-native';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker';
 
 interface Media {
   title: string;
@@ -11,45 +11,27 @@ interface Media {
 export const fetchMovies = async (): Promise<Media[]> => {
   try {
     const response = await axios.get('https://reactnative.dev/movies.json');
+    const placeholder = 'https://via.placeholder.com/150';
     const movieList = response.data.movies;
 
-    // Adicionando os pôsteres para os filmes
-    const updatedMovies = movieList.map((movie: Media) => {
-      let poster = '';
-
-      switch (movie.title) {
-        case 'Star Wars':
-          poster = "https://via.placeholder.com/150";
-          break;
-        case 'Back to the Future':
-          poster = "https://via.placeholder.com/150";
-          break;
-        case 'The Matrix':
-          poster = "https://via.placeholder.com/150";
-          break;
-        case 'Inception':
-          poster = "https://via.placeholder.com/150";
-          break;
-        case 'Interstellar':
-          poster = "https://via.placeholder.com/150";
-          break;
-        default:
-          poster = "https://via.placeholder.com/150"; // Pôster padrão para filmes que não estão na lista.
-      }
-
-      return { ...movie, poster }; // Garantimos que o poster é sempre uma string.
-    });
+    // Processando a lista para incluir o placeholder no pôster
+    const updatedMovies = movieList.map((movie: any) => ({
+      title: movie.title,
+      releaseYear: movie.releaseYear,
+      poster: placeholder, // Sempre o placeholder para o pôster
+    }));
 
     return updatedMovies;
   } catch (error) {
-    throw new Error('Erro ao buscar filmes');
+    console.error('Erro ao buscar filmes:', error);
+    throw error;
   }
 };
 
 // Função para selecionar uma imagem da galeria
 export const selectImageFromGallery = async () => {
   try {
-    const options = {
+    const options:ImageLibraryOptions = {
       mediaType: 'photo',
       maxWidth: 300,
       maxHeight: 300,
