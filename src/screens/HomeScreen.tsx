@@ -1,25 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, Button, FlatList, Image, StyleSheet, ActivityIndicator } from 'react-native';
 import { fetchMovies, selectImageFromGallery } from '../services/movieService';
 
-interface Movie {
-  id: number;
+interface Media {
   title: string;
   releaseYear: string;
   poster: string;
 }
 
-const HomeScreen: React.FC = (navigation):any => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+const HomeScreen: React.FC = () => {
+  const [movies, setMovies] = useState<Media[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [starWarsPoster, setStarWarsPoster] = useState<string>(''); // Estado para o novo pôster de Star Wars
-
-
+  const [GaleryPoster, setGaleryPoster] = useState<string>(''); // Estado para o novo pôster da galeria
 
   useEffect(() => {
     const getMovies = async () => {
       try {
-        const movieData: Movie[] = await fetchMovies();
+        const movieData: Media[] = await fetchMovies();
         setMovies(movieData);
       } catch (error) {
         if (error instanceof Error) {
@@ -35,22 +32,36 @@ const HomeScreen: React.FC = (navigation):any => {
     getMovies();
   }, []);
 
-  // Função para substituir o pôster de Star Wars
-  const handleSelectImage = async () => {
-    const newPosterUri = await selectImageFromGallery();
-    if (newPosterUri) {
-      setStarWarsPoster(newPosterUri);
-    }
-  };
+    // Função para substituir o pôster de Galeria
+    const handleSelectImage = async () => {
+      const newPosterUri = await selectImageFromGallery();
+      if (newPosterUri) {
+        setGaleryPoster(newPosterUri);
+      }
+    };
 
   if (loading) {
-    return <ActivityIndicator size="large" />;
+    return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
-  const renderItem = ({ item }: { item: Movie }) => (
+  const renderItem = ({ item }: { item: Media }) => (
     <View style={styles.card}>
-      <Image source={{ uri: item.poster }} style={styles.poster} />
-      <View style={styles.textContainer}>
+      {/* Se o filme for Star Wars, exibe o botão para trocar o pôster */}
+      {item.title === 'Star Wars' ? (
+        <TouchableOpacity onPress={handleSelectImage}>
+          <View>
+            <Image
+              source={{ uri: GaleryPoster || item.poster }}
+              style={styles.poster}
+              resizeMode="cover"
+            />
+            <Button title="Trocar" onPress={handleSelectImage} />
+          </View>
+        </TouchableOpacity>
+      ) : (
+        <Image source={{ uri: item.poster }} style={styles.poster} resizeMode="cover" />
+      )}
+      <View style={styles.info}>
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.subtitle}>{item.releaseYear}</Text>
       </View>
@@ -58,47 +69,30 @@ const HomeScreen: React.FC = (navigation):any => {
   );
 
   return (
-    <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <FlatList
-          data={movies}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.title}
-        />
-      )}
-    </View>
+    <FlatList
+      data={movies}
+      keyExtractor={(item) => item.toString()} // Chave única para cada item
+      renderItem={renderItem}
+    />
   );
 };
 
+export default HomeScreen;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    //padding: 10,
-    backgroundColor: '#f2f2f2',
-  },
   card: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    //borderRadius: 10,
     padding: 10,
-    //marginBottom: 10,
-    alignItems: 'center',
-    //shadowColor: '#000',
-    //shadowOffset: { width: 0, height: 2 },
-    //shadowOpacity: 0.8,
-    //shadowRadius: 2,
-    elevation: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
   poster: {
-    width: 80,
-    height: 120,
-    borderRadius: 10,
+    width: 100,
+    height: 150,
   },
-  textContainer: {
+  info: {
     marginLeft: 10,
-    flex: 1,
+    justifyContent: 'center',
   },
   title: {
     fontSize: 18,
@@ -108,8 +102,6 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 14,
     fontStyle: 'italic',
-    color: '#888',
+    color: '#777',
   },
 });
-
-export default HomeScreen;
